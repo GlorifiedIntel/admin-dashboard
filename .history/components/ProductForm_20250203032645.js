@@ -1,0 +1,110 @@
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import Layout from './Layout';
+
+export default function ProductForm({
+    title: existingTitle,
+    description: existingDescription,
+    price: existingPrice,
+    image: existingImage,
+    id, // Product id (for editing)
+}) {
+    const [title, setTitle] = useState(existingTitle || '');
+    const [description, setDescription] = useState(existingDescription || '');
+    const [price, setPrice] = useState(existingPrice || '');
+    const [images, setImages] = useState(existingImage || []); // Initialize as an array
+    const [files, setFiles] = useState([]); // State to hold multiple files
+    const router = useRouter();
+
+    useEffect(() => {
+        if (existingTitle) setTitle(existingTitle);
+        if (existingDescription) setDescription(existingDescription);
+        if (existingPrice) setPrice(existingPrice);
+        if (existingImage) setImages(existingImage);
+    }, [existingTitle, existingDescription, existingPrice, existingImage]);
+
+    async function handleSubmit(ev) {
+        ev.preventDefault();
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('price', price);
+
+        // Append all files to formData
+        files.forEach(file => {
+            formData.append('images', file);
+        });
+
+        try {
+            let response;
+            if (id) {
+                // Edit existing product
+                response = await axios.put(`/api/products?id=${id}`, formData);
+            } else {
+                // Create new product
+                response = await axios.post('/api/products', formData);
+            }
+
+            // After successful submission, navigate to the products page
+            router.push('/products');
+        } catch (error) {
+            console.error("Error saving product:", error.response || error);
+            alert("There was an issue saving the product. Please try again.");
+        }
+    }
+
+    // Preview images before uploading
+    const imagePreviews = images.length > 0 ? images.map((image, index) => (
+        <Image key={index} src={image} alt={`Product Image ${index + 1}`} width={100} height={100} objectFit="cover" />
+    )) : null;
+
+    return (
+        <Layout>
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <label>Product Name</label><br />
+                <input
+                    type="text"
+                    placeholder="Product Name"
+                    value={title}
+                    onChange={(ev) => setTitle(ev.target.value)}
+                    required
+                /><br />
+
+                <label>Product Description</label><br />
+                <textarea
+                    placeholder="Product Description"
+                    value={description}
+                    onChange={(ev) => setDescription(ev.target.value)}
+                    required
+                /><br />
+
+                <label>Price (in &#8358;)</label><br />
+                <input
+                    type="number"
+                    placeholder="Price"
+                    value={price}
+                    onChange={(ev) => setPrice(ev.target.value)}
+                    required
+                    min="0"
+                /><br />
+
+                <label>Product Images</label><br />
+                <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(ev) => setFiles(Array.from(ev.target.files))}
+                /><br />
+
+                {/* Show image previews if there are any */}
+                {imagePreviews}
+
+                <button type="submit" className="btn-primary">
+                    {id ? 'Update Product' : 'Add Product'}
+                </button>
+            </form>
+        </Layout>
+    );
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+input, textarea {
+border: 1.5px solid #d1d5db; /* border-gray-300 */
+padding: 0.5rem; /* p-2 */
+border-radius: 0.375rem; /* rounded-md */
+width: 32rem; /* w-2xl */
+margin-bottom: 0.373rem; /* mb-2 */
+}

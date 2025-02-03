@@ -1,0 +1,59 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+input, textarea {
+border: 1.5px solid #d1d5db; /* border-gray-300 */
+padding: 0.5rem; /* p-2 */
+border-radius: 0.375rem; /* rounded-md */
+width: 32rem; /* w-2xl */
+margin-bottom: 0.373rem; /* mb-2 */
+}
+
+h1 {
+font-size: 2rem; /* text-2xl */
+color: whitesmoke;
+text-align: center;
+}
+
+label {
+font-size: 1rem; /* text-lg */
+color: #666;
+font-weight: bold; /* font-bold */
+}
+
+.btn-primary {
+background-color: #212738; /* bg-blue-500 */
+color: #fff; /* text-white */
+padding: 0.5rem 1rem; /* py-2 px-4 */
+border-radius: 0.375rem; /* rounded-md */
+}
+
+table.basic {
+    width: 100%;
+}
+
+table.basic thead tr td {
+    background-color:#F58A07;
+    color:#333;
+    font-weight: bold;
+}
+
+table.basic tr td {
+    border: 1px solid #666;
+    padding: 0.5rem
+}
+
+table.basic a {
+    background-color: #19323C;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    width: 100px;
+    display:inline-flex;
+    margin-right: 5px;
+   
+}
+
