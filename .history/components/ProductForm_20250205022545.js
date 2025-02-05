@@ -6,7 +6,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"; // AWS SDK v3
 import Layout from "./Layout";
 
 const s3Client = new S3Client({
-  region: "eu-north-1", 
+  region: "us-east-1", // Change to your S3 region
   credentials: {
     accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,

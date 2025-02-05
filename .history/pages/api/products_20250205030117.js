@@ -1,9 +1,9 @@
-import { Product } from "../../models/Product";
+import { Product } from "../../models/Product"; 
 import { mongooseConnect } from "../../lib/mongoose";
 import mongoose from "mongoose";
 import formidable from "formidable";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import fs from "fs";
+
 
 export const config = {
   api: {
@@ -20,9 +20,8 @@ const s3Client = new S3Client({
 });
 
 // Upload function for AWS SDK v3
-const uploadToS3 = async (filePath, fileName, mimeType) => {
+const uploadToS3 = async (fileBuffer, fileName, mimeType) => {
   try {
-    const fileBuffer = fs.readFileSync(filePath); // Read the file as a buffer
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `products/${Date.now()}_${fileName}`,
@@ -33,7 +32,7 @@ const uploadToS3 = async (filePath, fileName, mimeType) => {
 
     await s3Client.send(new PutObjectCommand(params));
 
-    return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${params.Key}`;
+    return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/products/${Date.now()}_${fileName}`;
   } catch (error) {
     console.error("S3 Upload Error:", error);
     throw new Error("File upload failed.");
@@ -101,7 +100,7 @@ async function handlePostOrPutRequest(req, res, method) {
       }
 
       let imageUrls = [];
-      if (files.images && files.images.length > 0) {
+      if (files.images) {
         const filesArray = Array.isArray(files.images) ? files.images : [files.images];
 
         for (const file of filesArray) {
@@ -122,7 +121,7 @@ async function handlePostOrPutRequest(req, res, method) {
 
       if (method === "PUT") {
         const { id } = req.query;
-        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
           return res.status(400).json({ error: `Invalid product ID: ${id}` });
         }
 
